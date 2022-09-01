@@ -1,0 +1,22 @@
+@import "./global.css";
+
+/* USERSF */
+@import "./UserItem.css";
+@import "./UsersList.css";
+@import "./MainHeader.css";
+@import "./MainNavigation.css";
+@import "./NavLinks.css";
+@import "./SideDrawer.css";
+@import "./Backdrop.css";
+@import "./PlaceList.css";
+@import "./PlaceItem.css";
+@import "./NewPlace.css";
+
+@import "./Button.css";
+@import "./Card.css";
+@import "./Modal.css";
+@import "./Avatar.css";
+@import "./Input.css";
+
+/* UTILS */
+@import "./u.flex.css";
