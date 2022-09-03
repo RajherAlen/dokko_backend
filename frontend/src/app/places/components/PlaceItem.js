@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Button, Modal } from "shared/components";
+import { Card, Button, Modal, Map } from "shared/components";
 
 const PlaceItem = ({ imgUrl, title, address, description, id }) => {
 	const [showMap, setShowMap] = useState(false);
@@ -18,7 +18,7 @@ const PlaceItem = ({ imgUrl, title, address, description, id }) => {
 				footer={<Button onClick={closeMapHandler}>Close</Button>}
 			>
 				<div className="map-container">
-					<h2>MAP</h2>
+					<Map position={[45.5485306, 18.6899196]} />
 				</div>
 			</Modal>
 
