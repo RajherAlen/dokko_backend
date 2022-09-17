@@ -18,7 +18,7 @@ const PlaceItem = ({ imgUrl, title, address, description, id }) => {
 				footer={<Button onClick={closeMapHandler}>Close</Button>}
 			>
 				<div className="map-container">
-					<Map position={[45.5485306, 18.6899196]} />
+					<Map city={"Đakovo"} />
 				</div>
 			</Modal>
 

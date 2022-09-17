@@ -4,3 +4,5 @@ export { default as Card } from "./Card/Card";
 export { default as Backdrop } from "./Backdrop/Backdrop";
 export { default as Modal } from "./Modal/Modal";
 export { default as Map } from "./Map/Map";
+export { default as Input } from "./Input/Input";
+export { default as Textarea } from "./Textarea/Textarea";
