@@ -6,6 +6,8 @@ const Textarea = (props) => {
         label,
         id,
         onInput,
+        initialValue = "",
+        initialValid = false,
         placeholder,
         errorText,
         validators,
@@ -13,8 +15,8 @@ const Textarea = (props) => {
     } = props;
 
     const [inputState, dispatch] = useReducer(inputReducer, {
-        value: "",
-        isValid: false,
+        value: initialValue,
+        isValid: initialValid,
         isTouched: false,
     });
 

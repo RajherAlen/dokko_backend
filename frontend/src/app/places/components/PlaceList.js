@@ -1,14 +1,14 @@
 import React from "react";
-import { Card } from "shared/components";
+import { Button, Card } from "shared/components";
 import { PlaceItem } from "app/places/components";
 
 const PlaceList = ({ itemList }) => {
 	if (itemList.length === 0) {
 		return (
 			<div className="place-list u-f--center">
-				<Card>
+				<Card className="card--med">
 					<h2>No places found. Maybe create one?</h2>
-					<button>Share Place</button>
+					<Button to="/places/new">Share Place</Button>
 				</Card>
 			</div>
 		);

@@ -2,12 +2,21 @@ import React, { useReducer, useEffect } from "react";
 import { inputReducer, handleChange, handleBlur } from "shared/util";
 
 const Input = (props) => {
-    const { label, id, type, placeholder, errorText, validators, onInput } =
-        props;
+    const {
+        label,
+        id,
+        initialValue = "",
+        initialValid = false,
+        type,
+        placeholder,
+        errorText,
+        validators,
+        onInput,
+    } = props;
 
     const [inputState, dispatch] = useReducer(inputReducer, {
-        value: "",
-        isValid: false,
+        value: initialValue,
+        isValid: initialValid,
         isTouched: false,
     });
 
