@@ -38,7 +38,7 @@ const getPlacesByUserId = async (req, res, next) => {
     // let places;
     let userWithPlaces;
     try {
-        userWithPlaces = await User.findById(userID ).populate('places');
+        userWithPlaces = await User.findById(userID).populate("places");
     } catch {
         const err = new HttpError(
             "Could not find a place for the provided user id",
@@ -57,7 +57,9 @@ const getPlacesByUserId = async (req, res, next) => {
     }
 
     res.json({
-        places: userWithPlaces.places.map((place) => place.toObject({ getters: true })),
+        places: userWithPlaces.places.map((place) =>
+            place.toObject({ getters: true })
+        ),
     });
 };
 
@@ -165,6 +167,14 @@ const updatePlace = async (req, res, next) => {
         return next(err);
     }
 
+    if (place.creator !== req.userData.userId) {
+        const error = new HttpError(
+            "You are not allowed to edit this place",
+            403
+        );
+        return next(error);
+    }
+
     res.status(202).json({ place: place.toObject({ getters: true }) });
 };
 
@@ -197,6 +207,14 @@ const deletePlace = async (req, res, next) => {
     if (!place) {
         const err = new HttpError("Could not find place for this id", 404);
         return next(err);
+    }
+
+    if (place.creator.id !== req.userData.userId) {
+        const error = new HttpError(
+            "You are not allowed to delete this place",
+            403
+        );
+        return next(error);
     }
 
     try {

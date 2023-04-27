@@ -2,6 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const usersControllers = require("../controllers/users-controllers");
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
@@ -16,14 +17,26 @@ const signUpValidation = [
     check("username").not().isEmpty(),
 ];
 
-router.get("/", usersControllers.getUser);
+const editMemberValidation = [
+    check("username"),
+    check("email").normalizeEmail().isEmail(),
+    check("role"),
+];
+
+router.get("/", usersControllers.getUsers);
+
+router.get("/:uid", usersControllers.getUser);
 
 router.post("/login", loginValidation, usersControllers.loginUser);
 
 router.post("/register", signUpValidation, usersControllers.registerUser);
 
-router.delete("/:uid", usersControllers.deleteUser);
-
 router.post("/refresh-token", usersControllers.refreshToken);
+
+router.patch("/:uid", editMemberValidation, usersControllers.updateUser);
+
+router.use(checkAuth);
+
+router.delete("/:uid", usersControllers.deleteUser);
 
 module.exports = router;

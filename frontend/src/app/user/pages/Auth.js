@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Input, Button, ErrorModal, Loader } from "shared/components";
 import { AuthContext } from "shared/context";
-import { useForm } from "shared/hooks";
+import { useForm, useHttpClient } from "shared/hooks";
 import {
     VALIDATOR_EMAIL,
     VALIDATOR_MINLENGTH,
@@ -22,8 +22,7 @@ const initialLoginInputs = {
 const Auth = () => {
     const { isLogged, login } = useContext(AuthContext);
     const [isLoginMode, setIsLoginMode] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
+    const { isLoading, error, sendRequest, clearEror } = useHttpClient();
 
     const [formState, handleInput, setFormData] = useForm(
         initialLoginInputs,
@@ -36,39 +35,20 @@ const Auth = () => {
         if (isLogged) {
             console.log("first");
         } else {
-            console.log("SECOND");
-            try {
-                setIsLoading(true);
-                const res = await fetch(
-                    "http://localhost:5000/api/users/signup",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            username: formState.inputs.username.value,
-                            email: formState.inputs.email.value,
-                            password: formState.inputs.password.value,
-                        }),
-                    }
-                );
-
-                const responseData = await res.json();
-
-                if (!responseData.ok) {
-                    throw new Error(responseData);
+            await sendRequest(
+                "http://localhost:5000/api/users/signup",
+                "POST",
+                JSON.stringify({
+                    username: formState.inputs.username.value,
+                    email: formState.inputs.email.value,
+                    password: formState.inputs.password.value,
+                }),
+                {
+                    "Content-Type": "application/json",
                 }
+            );
 
-                setIsLoading(false);
-                login();
-            } catch (err) {
-                console.log(err);
-                setIsLoading(false);
-                setError(
-                    err.message || "Something went wrong, please try again"
-                );
-            }
+            login();
         }
     };
 
@@ -99,7 +79,7 @@ const Auth = () => {
     };
 
     const errorHandler = () => {
-        setError(null);
+        clearEror();
     };
 
     return (

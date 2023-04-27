@@ -1,5 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
+const checkAuth = require("../middleware/check-auth");
 
 const placesControllers = require("../controllers/places-controllers");
 
@@ -18,6 +19,8 @@ const updatePlaceValidation = [
 
 router.get("/:pid", placesControllers.getPlaceById);
 router.get("/user/:uid", placesControllers.getPlacesByUserId);
+
+router.use(checkAuth);
 
 router.post("/", createPlaceValidation, placesControllers.createPlace);
 
