@@ -8,17 +8,20 @@ const router = express.Router();
 
 const loginValidation = [
     // check("email").normalizeEmail().isEmail(),
-    check("username"),
+    check("firstName"),
+    check("lastName"),
     check("password").isLength({ min: 5 }),
 ];
 
 const signUpValidation = [
     ...loginValidation,
-    check("username").not().isEmpty(),
+    check("firstName").not().isEmpty(),
+    check("lastName").not().isEmpty(),
 ];
 
 const editMemberValidation = [
-    check("username"),
+    check("firstName"),
+    check("lastName"),
     check("email").normalizeEmail().isEmail(),
     check("role"),
 ];

@@ -53,7 +53,7 @@ const registerUser = async (req, res, next) => {
         );
     }
 
-    const { username, email, password, role } = req.body;
+    const { firstName, lastName, email, password } = req.body;
 
     let existingUser;
     try {
@@ -88,13 +88,11 @@ const registerUser = async (req, res, next) => {
     }
 
     const createdUser = new User({
-        username,
+        firstName: "",
+        lastName: "",
         email,
         password: hashedPassword,
-        role,
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRchbdWEujVptDWG2utJcpSVYvtl59V_315VQ6tO0x0uOVM9g9UKf72r7pt18fRMb5u4k&usqp=CAU",
-        places: [],
-        role: "Viewer",
+        role: "viewer",
     });
 
     try {
@@ -225,7 +223,7 @@ const updateUser = async (req, res, next) => {
         );
     }
 
-    const { username, email, role } = req.body;
+    const { firstName, lastName, email, role } = req.body;
     let user;
 
     try {
@@ -238,7 +236,8 @@ const updateUser = async (req, res, next) => {
         return next(err);
     }
 
-    user.username = username;
+    user.firstName = firstName;
+    user.lastName = lastName;
     user.email = email;
     user.role = role;
 
