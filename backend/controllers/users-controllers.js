@@ -1,4 +1,3 @@
-const uuid = require("uuid/v4");
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const User = require("../models/user");
@@ -53,7 +52,7 @@ const registerUser = async (req, res, next) => {
         );
     }
 
-    const { firstName, lastName, email, password } = req.body;
+    const { email, password } = req.body;
 
     let existingUser;
     try {
@@ -93,6 +92,7 @@ const registerUser = async (req, res, next) => {
         email,
         password: hashedPassword,
         role: "viewer",
+        organization: "",
     });
 
     try {
@@ -102,23 +102,10 @@ const registerUser = async (req, res, next) => {
         return next(err);
     }
 
-    let token;
-    try {
-        jwt.sign(
-            { userId: createdUser.id, email: createdUser.email },
-            "secret_dont_share",
-            { expiresIn: "1h" }
-        );
-    } catch {
-        const err = new HttpError("Signing up failed, please try again", 500);
-        return next(err);
-    }
-
     res.status(201).json({
         user: {
             userId: createdUser.id,
             email: createdUser.email,
-            token,
         },
     });
 };
@@ -131,11 +118,11 @@ const loginUser = async (req, res, next) => {
         );
     }
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     let existingUser;
 
     try {
-        existingUser = await User.findOne({ username: username });
+        existingUser = await User.findOne({ email: email });
     } catch {
         const err = new HttpError("Login failed, please try again later", 500);
 
@@ -263,9 +250,75 @@ const refreshToken = async (req, res, next) => {
     res.status(200).json({ token });
 };
 
+const createMember = async (req, res, next) => {
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        return next(
+            new HttpError("invalid input passed, please check your data", 422)
+        );
+    }
+
+    const { firstName, lastName, email, role } = req.body;
+
+    let existingUser;
+    try {
+        existingUser = await User.findOne({ email: email });
+    } catch {
+        const err = new HttpError(
+            "Creating member failed, please try again later",
+            500
+        );
+
+        return next(err);
+    }
+
+    if (existingUser) {
+        const err = new HttpError(
+            "User exists already, please login instead.",
+            422
+        );
+
+        return next(err);
+    }
+
+    let hashedPassword;
+    try {
+        hashedPassword = await bcrypt.hash("Mono.123", 12);
+    } catch {
+        const err = new HttpError(
+            "Could not create a member, please try again",
+            500
+        );
+        return next(err);
+    }
+
+    const createdUser = new User({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        role,
+    });
+
+    try {
+        await createdUser.save();
+    } catch {
+        const err = new HttpError(
+            "Creating member failed, please try again",
+            500
+        );
+        return next(err);
+    }
+
+    res.status(201).json({
+        createdUser,
+    });
+};
+
 exports.getUser = getUser;
 exports.getUsers = getUsers;
 exports.registerUser = registerUser;
+exports.createMember = createMember;
 exports.loginUser = loginUser;
 exports.deleteUser = deleteUser;
 exports.updateUser = updateUser;
